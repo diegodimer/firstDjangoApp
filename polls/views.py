@@ -23,6 +23,13 @@ class DetailView(generic.DetailView):
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+    def get_context_data(self, **kwargs):
+        context = super(ResultsView, self).get_context_data(**kwargs)
+        var = 0
+        for i in context['question'].choice_set.all():
+            var += i.votes
+        context['total_votes'] = var
+        return context
     
 #def index(request):
 #    latest_question_list = Question.objects.order_by('-pub_date')[:5]
