@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 import datetime
 
-from .models import Question
+from .models import Question, Choice
 
 
 def create_question(question_text, days):
@@ -13,7 +13,9 @@ def create_question(question_text, days):
     """
     time = timezone.now()+datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
-    
+
+def create_choice(question: Question, choice_text, votes):
+    return Choice.objects.create(choice_text=choice_text, votes=votes, question=question)
 
 class QuestionModelTests(TestCase):
     def test_was_published_recently_with_future_question(self):
@@ -96,3 +98,38 @@ class QuestionDetailViewTests(TestCase):
         url = reverse("polls:detail", args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+class QuestionResultsViewTest(TestCase):
+    def test_1_votes(self):
+        """
+        questions with 1 vote has only one vote
+        """
+        question = create_question(question_text="Question.", days=-1)
+        choice = create_choice(question, "first choice", 1)
+        url = reverse("polls:results", args=(question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, choice.choice_text)
+        self.assertContains(response, "1 vote")
+    
+    def test_different_votes(self):
+        """
+        questions with different number of votes
+        """
+        question = create_question(question_text="Question.", days=-1)
+        choice1 = create_choice(question, "first choice", 0)
+        choice2 = create_choice(question, "second choice", 1)
+        url = reverse("polls:results", args=(question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, choice1.choice_text)
+        self.assertContains(response, choice2.choice_text)
+        self.assertContains(response, "0 votes")
+        self.assertContains(response, "1 vote")
+    
+    def test_future_question_not_show(self):
+        """
+        Can't see results for future questions
+        """
+        question = create_question(question_text="Question", days=1)
+        url = reverse("polls:results", args=(question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)

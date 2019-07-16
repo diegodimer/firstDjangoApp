@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.db.models import F
 from .models import Choice, Question
 from django.utils import timezone
+
 
 class IndexView(generic.ListView):
     template_name= 'polls/index.html'
@@ -30,6 +32,8 @@ class ResultsView(generic.DetailView):
             var += i.votes
         context['total_votes'] = var
         return context
+    def get_queryset(self):
+        return Question.objects.filter(pub_date__lte=timezone.now())
     
 #def index(request):
 #    latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -54,13 +58,15 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+        selected_choice = question.choice_set.filter(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         return render(request, 'polls/questions.html', {
                 'question': question,
                 'error_message': "You didn't select a choice.",
                 })
-        
-    selected_choice.votes +=1
-    selected_choice.save()
+    #if using get (instead of filter)
+#    selected_choice.votes = F('votes')+1
+#    selected_choice.save()
+    #using filter
+    selected_choice.update(votes=F('votes')+1)
     return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
