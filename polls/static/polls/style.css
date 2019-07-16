@@ -1,0 +1,74 @@
+/*all the styles are in the same sheet, why? Because its a very simple app, so i dont see why i'd need one style sheet for each view*/
+/* styles for questions.html */
+
+.alert{
+    position: fixed;
+    z-index: 1;
+    width: 80%;
+    text-align: center;
+}
+
+.form-check h1{ 
+    width: 100%; 
+    padding-top: 50px;
+    padding-bottom: 20px;
+    text-transform: initial;
+}
+.form-check .my-input-group{
+    margin-top: 10px;
+}
+.card-body{
+   text-align: center ;
+}
+
+
+/* styles for results.html */
+.display-4, ul .container{
+    padding:40px 0px;
+
+}
+ul li span {
+    color:rgba(143, 142, 142, 0.836);
+}
+li {
+    list-style: none;
+}
+
+.smaller-button{
+    padding: 0px 30%;
+}
+
+.polls-results{
+    margin-top: 30px;
+    background-color:rgba(255, 255, 255, 0.466);
+}
+/* styles for index.html */
+.jumbotron{
+    margin-top: 20px;
+    background-color:rgba(167, 169, 173, 0.288);
+}
+
+li a{
+    color:rgb(65, 63, 63);
+}
+
+body{
+    background-color: rgba(209, 211, 212, 0.212);
+    color: rgb(65, 63, 63);
+}
+
+a:hover{
+    color: rgb(65, 63, 63);
+    text-decoration: none;
+}
+
+.list-group-item:hover{
+    background-color: rgba(167, 169, 173, 0.288);
+    border: none;
+    color: rgb(65, 63, 63);
+}
+
+.btn-outline-secondary{
+    background-color: white;
+    
+}

@@ -10,14 +10,17 @@
         invalid question
         {%endif%}
     </title>
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js">
     </script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 </head>
 <body>
     <div class="container" >
         {% if error_message %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert"  style="position: fixed; z-index: 1; width: 80%; text-align: center">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Holy guacamole!</strong> {{error_message}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -29,20 +32,31 @@
                     
 
         
-            <div class=" card-body form-check" style="text-align: center">
-                    <h1 style='width: 100%; padding-top: 50px;padding-bottom: 3px' class='display-1'>{{ question.question_text }}</h1>
+            <div class="card-body form-check">
+                    <h1 class='display-1'>{{ question.question_text }}</h1>
+
                     <form action="{% url 'polls:vote' question.id %}" method="post">
                     {% csrf_token %}
                     {% for choice in question.choice_set.all %}
-                    <div style='margin-top: 5px'>
+                    <div class='my-input-group'>
                         <input class="form-check-input" type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
                         <label for="choice{{ forloop.counter }}" class="form-check-label">{{ choice.choice_text }}</label><br>
                     </div>
                         {% endfor %}
-                    <input type="submit" class='btn btn-outline-secondary btn-md' value="Vote" style="margin-top: 10px">
+                    <input type="submit" class='btn btn-outline-secondary btn-md my-input-group' value="Vote" >
                     </form>
-            
-        </div>
+                
+                    <form action="{% url 'polls:new_choice' question.id %}" method="post">
+                    {% csrf_token %}
+                        <div class='input-group mb-3 container my-input-group'>
+                            <input type="text" class="form-control" id="newChoice" name="newChoice" placeholder="Add new choice" aria-label="Add new choice" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                                <input type="submit" class="btn btn-outline-secondary" value="Submit" id="button-addon2">
+                            </div>
+                        </div>
+                    </form>
+                    
+            </div>
         <a href="http://127.0.0.1:8000/polls">back</a>
     </div>
 

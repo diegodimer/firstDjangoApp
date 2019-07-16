@@ -70,3 +70,23 @@ def vote(request, question_id):
     #using filter
     selected_choice.update(votes=F('votes')+1)
     return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+def new_choice(request, question_id):
+   
+    try:
+        question = get_object_or_404(Question, pk=question_id)
+        new_choice_text = request.POST['newChoice']
+        if request.POST['newChoice'] != "":
+            Choice.objects.create(choice_text=new_choice_text, question = question, votes=0)
+            return render(request, 'polls/questions.html',{
+                    'question': question
+                    })
+        else: return render(request, 'polls/questions.html', {
+                    'question': question,
+                    'error_message': "You didn't write a new choice!",
+                    })
+    except:
+        return render(request, 'polls/questions.html', {
+                    'question': question,
+                    'error_message': "Something went wrong, try again!",
+                    })

@@ -7,27 +7,29 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Results</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 </head>
 <body>
 
     
-    <div class="container">
-    <h1 class="display-4" style="padding:40px 0px">Results for {{ question.question_text }}</h1>
+    <div class="container polls-results">
+    <h1 class="display-4">Results for {{ question.question_text }}</h1>
 
     <ul>
     {% for choice in question.choice_set.all %}
-        <div class="container" style="padding:20px">
-        <li style="list-style: none"><strong>{{ choice.choice_text }}</strong> - <span style='color:rgba(138, 131, 131, 0.836)'>{{ choice.votes }} vote{{ choice.votes|pluralize }}</span></li>
+        <div class="container">
+        <li ><strong>{{ choice.choice_text }}</strong> - <span>{{ choice.votes }} vote{{ choice.votes|pluralize }}</span></li>
         <div class="progress">
             
-            <div class="progress-bar" role="progressbar" style="width: {% with total=choice.votes|mul:100 %}{{ total|div:total_votes|floatformat:"0" }}{% endwith %}%;background-color:gray" aria-valuenow={{choice.votes}} aria-valuemin="0" aria-valuemax={{total_votes}}> {% with total=choice.votes|mul:100 %}{{ total|div:total_votes|floatformat }}{% endwith %}</div>
+            <div class="progress-bar" role="progressbar" style="width: {% with total=choice.votes|mul:100 %}{{ total|div:total_votes|floatformat:'0' }}{% endwith %}%;background-color:gray" aria-valuenow={{choice.votes}} aria-valuemin="0" aria-valuemax={{total_votes}}> {% with total=choice.votes|mul:100 %}{{ total|div:total_votes|floatformat }}{% endwith %}</div>
         </div>
     </div>
     {% endfor %}
     </ul>
 
-    <div class="container" style="padding: 0px 90px">
-    <a href="{% url 'polls:detail' question.id %}"  class='btn btn-secondary btn-lg btn-block'>Vote again? {{total_votes}}</a>
+    <div class="container smaller-button">
+    <a href="{% url 'polls:detail' question.id %}"  class='btn btn-secondary btn-lg btn-block'>Vote again?</a>
     </div>
 </div>
 
